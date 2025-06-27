@@ -1,23 +1,32 @@
+
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
+from bot import start  # ✅ allows us to reuse the /start menu
 
-# === This gets called when user types /order ===
-async def order_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# === This gets called when user types /order or presses the Order Menu button ===
+async def order_menu(update: Update, context: ContextTypes.DEFAULT_TYPE, from_callback=False):
     keyboard = [
         [InlineKeyboardButton("🍕 View Menu", callback_data="order_view_menu")],
         [InlineKeyboardButton("📝 Place Order", callback_data="order_place")],
         [InlineKeyboardButton("📦 My Orders", callback_data="order_my_orders")],
         [InlineKeyboardButton("⏱ Wait Time", callback_data="order_wait_time")],
-        [InlineKeyboardButton("📞 Contact", callback_data="order_contact")]
+        [InlineKeyboardButton("📞 Contact", callback_data="order_contact")],
+        [InlineKeyboardButton("🔙 Back to Main Menu", callback_data="start_back")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text(
-        "🧾 Order Menu:\nPlease choose an option below:",
-        reply_markup=reply_markup
-    )
+    if from_callback:
+        await update.callback_query.edit_message_text(
+            "🧾 Order Menu:\nPlease choose an option below:",
+            reply_markup=reply_markup
+        )
+    else:
+        await update.message.reply_text(
+            "🧾 Order Menu:\nPlease choose an option below:",
+            reply_markup=reply_markup
+        )
 
-# === This handles all button clicks ===
+# === This handles all order menu button clicks ===
 async def order_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -56,3 +65,6 @@ async def order_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text="📞 *Contact Us:*\n- Phone: 065 982 1883\n- Telegram: @Letscrypto_bot",
             parse_mode="Markdown"
         )
+
+    elif data == "start_back":
+        await start(update, context)  # 🔁 Return to main menu
