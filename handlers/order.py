@@ -1,7 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from menus import get_order_keyboard, get_order_back_keyboard
-from bot import start  # only if necessary, else avoid import to reduce coupling
+from menus import get_order_keyboard, get_order_back_keyboard  
 
 async def order_menu(update: Update, context: ContextTypes.DEFAULT_TYPE, from_callback=False):
     keyboard = get_order_keyboard()
