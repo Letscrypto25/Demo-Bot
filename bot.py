@@ -6,63 +6,71 @@ from telegram.ext import (
     ContextTypes
 )
 from handlers import order, delivery, stock, help as help_handler
-from menus import get_start_keyboard
+from menus import get_entry_keyboard, get_customer_keyboard, get_admin_keyboard
 from utils.session import set_user_mode, get_user_mode, clear_user_mode
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 
-# === START SCREEN ===
+# === ENTRY SCREEN ===
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("▶️ Start Bot", callback_data="start_main")]
-    ])
+    keyboard = get_entry_keyboard()
     await update.message.reply_text(
-        "👋 Welcome to the Demo Bot!\nClick below to begin:",
+        "👋 Welcome to the Demo Bot!\nPlease choose your role:",
         reply_markup=keyboard
     )
 
 
-# === MAIN MENU ===
-async def start_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = get_start_keyboard()
-    query = update.callback_query
-    await query.answer()
-    await query.edit_message_text(
-        "🚀 Choose a template to get started:",
-        reply_markup=keyboard
-    )
-
-
-# === CALLBACK ROUTER ===
+# === MAIN ROUTER ===
 async def callback_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     data = query.data
 
-    if data == "start_main":
-        await start_main_menu(update, context)
-    elif data == "start_order":
-        await order.order_menu(update, context, from_callback=True)
-    elif data == "start_delivery":
-        await delivery.delivery_menu(update, context, from_callback=True)
-    elif data == "start_stock":
-        await stock.stock_menu(update, context, from_callback=True)
-    elif data == "start_help":
-        await help_handler.help_menu(update, context, from_callback=True)
+    # Entry roles
+    if data == "start_customer":
+        await query.edit_message_text(
+            "🧍 Customer Menu:\nPlease choose an option:",
+            reply_markup=get_customer_keyboard()
+        )
+    elif data == "start_admin":
+        await query.edit_message_text(
+            "👨‍🍳 Admin Panel:\nSelect what you want to manage:",
+            reply_markup=get_admin_keyboard()
+        )
     elif data == "start_back":
-        await start_main_menu(update, context)
+        await query.edit_message_text(
+            "👋 Welcome to the Demo Bot!\nPlease choose your role:",
+            reply_markup=get_entry_keyboard()
+        )
 
-    # Route module-specific callbacks
+    # Customer routes
+    elif data == "menu_view":
+        await order.order_menu(update, context, from_callback=True)
+    elif data == "delivery_track":
+        await delivery.delivery_menu(update, context, from_callback=True)
+    elif data == "customer_contact":
+        await help_handler.help_menu(update, context, from_callback=True)
+
     elif data.startswith("order_"):
         await order.order_callback(update, context)
     elif data.startswith("delivery_"):
         await delivery.delivery_callback(update, context)
-    elif data.startswith("stock_"):
-        await stock.stock_callback(update, context)
     elif data.startswith("help_"):
         await help_handler.help_callback(update, context)
+
+    # Admin routes
+    elif data == "admin_stock":
+        await stock.stock_menu(update, context, from_callback=True)
+    elif data == "admin_delivery":
+        await delivery.delivery_menu(update, context, from_callback=True)
+    elif data == "admin_orders":
+        await order.order_menu(update, context, from_callback=True)
+    elif data == "admin_settings":
+        await query.edit_message_text("⚙️ Settings screen coming soon...")
+    elif data.startswith("stock_"):
+        await stock.stock_callback(update, context)
 
 
 # === MAIN APP ===
