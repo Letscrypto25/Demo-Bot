@@ -13,7 +13,7 @@ def get_customer_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🍽 View Menu", callback_data="menu_view")],
         [InlineKeyboardButton("🛒 View Cart", callback_data="cart_view")],
-        [InlineKeyboardButton("📍 Track Order", callback_data="delivery_track")],
+        [InlineKeyboardButton("📍 Track Order", callback_data="delivery_track_status")],
         [InlineKeyboardButton("📞 Contact", callback_data="customer_contact")],
         [InlineKeyboardButton("🔙 Back to Role Select", callback_data="back_to_entry")]
     ])
@@ -47,8 +47,8 @@ def get_order_back_keyboard():
     ])
 
 
-# === Delivery ===
-def get_delivery_keyboard():  # Used by customers
+# === Delivery Menus ===
+def get_delivery_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("📍 Track My Order", callback_data="delivery_track_status")],
         [InlineKeyboardButton("📜 Delivery History", callback_data="delivery_history")],
@@ -66,7 +66,7 @@ def get_admin_delivery_keyboard():
     ])
 
 
-# === Stock ===
+# === Stock Menu (Admin Only) ===
 def get_stock_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("📦 View Stock", callback_data="stock_view")],
@@ -83,7 +83,7 @@ def get_stock_back_keyboard():
     ])
 
 
-# === Help ===
+# === Help Menu (Customer) ===
 def get_help_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("❓ How to Use", callback_data="help_how_to_use")],
@@ -99,7 +99,7 @@ def get_help_back_keyboard():
     ])
 
 
-# === Settings (Admin) ===
+# === Settings Menu (Admin Placeholder) ===
 def get_settings_back_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🔙 Back to Admin Panel", callback_data="start_admin")]
