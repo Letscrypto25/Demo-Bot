@@ -55,3 +55,16 @@ def get_stock_back_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🔙 Back to Stock Menu", callback_data="stock_back")]
     ])
+
+def get_help_keyboard():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("❓ How to Use", callback_data="help_how_to_use")],
+        [InlineKeyboardButton("🛠 Features", callback_data="help_features")],
+        [InlineKeyboardButton("📞 Support", callback_data="help_support")],
+        [InlineKeyboardButton("🔙 Back to Main Menu", callback_data="start_back")]
+    ])
+
+def get_help_back_keyboard():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔙 Back to Help Menu", callback_data="help_back")]
+    ])
