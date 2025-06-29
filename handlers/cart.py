@@ -1,12 +1,11 @@
 import json
 import os
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes
 
-CART_FILE = os.path.join("data", "carts.json")
+CART_FILE = "data/cart.json"
 
-# === Load and Save Cart ===
 def load_cart():
+    if not os.path.exists(CART_FILE):
+        return {}
     with open(CART_FILE, "r") as f:
         return json.load(f)
 
@@ -14,39 +13,29 @@ def save_cart(cart):
     with open(CART_FILE, "w") as f:
         json.dump(cart, f, indent=2)
 
-# === Add item to cart ===
-async def add_to_cart(update: Update, context: ContextTypes.DEFAULT_TYPE, item: str):
-    user_id = str(update.effective_user.id)
+def get_user_cart(user_id):
     cart = load_cart()
-    cart.setdefault(user_id, []).append(item)
+    return cart.get(str(user_id), {})
+
+def add_item(user_id, item, quantity=1):
+    cart = load_cart()
+    user_cart = cart.get(str(user_id), {})
+    user_cart[item] = user_cart.get(item, 0) + quantity
+    cart[str(user_id)] = user_cart
     save_cart(cart)
-    await update.callback_query.answer(f"✅ Added {item} to cart", show_alert=False)
 
-# === View Cart ===
-async def view_cart(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = str(update.effective_user.id)
+def remove_item(user_id, item, quantity=1):
     cart = load_cart()
-    items = cart.get(user_id, [])
+    user_cart = cart.get(str(user_id), {})
+    if item in user_cart:
+        user_cart[item] = max(0, user_cart[item] - quantity)
+        if user_cart[item] == 0:
+            del user_cart[item]
+        cart[str(user_id)] = user_cart
+        save_cart(cart)
 
-    if not items:
-        await update.callback_query.edit_message_text("🛒 Your cart is empty.")
-        return
-
-    text = "🛒 *Your Cart:*\n" + "\n".join(f"- {i}" for i in items)
-    keyboard = [
-        [InlineKeyboardButton("🗑 Clear Cart", callback_data="cart_clear")],
-        [InlineKeyboardButton("🔙 Back", callback_data="order_back")]
-    ]
-    await update.callback_query.edit_message_text(
-        text=text,
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
-
-# === Clear Cart ===
-async def clear_cart(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = str(update.effective_user.id)
+def clear_cart(user_id):
     cart = load_cart()
-    cart[user_id] = []
-    save_cart(cart)
-    await update.callback_query.edit_message_text("🧹 Cart cleared.")
+    if str(user_id) in cart:
+        del cart[str(user_id)]
+        save_cart(cart)
