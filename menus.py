@@ -26,3 +26,20 @@ def get_order_back_keyboard():
         [InlineKeyboardButton("🔙 Back to Order Menu", callback_data="order_back")]
     ]
     return InlineKeyboardMarkup(keyboard)
+
+
+def get_delivery_keyboard():
+    keyboard = [
+        [InlineKeyboardButton("🚚 View Deliveries", callback_data="delivery_view")],
+        [InlineKeyboardButton("📍 Track My Order", callback_data="delivery_track")],
+        [InlineKeyboardButton("📜 Delivery History", callback_data="delivery_history")],
+        [InlineKeyboardButton("🗓 Schedule Delivery", callback_data="delivery_schedule")],
+        [InlineKeyboardButton("📞 Contact", callback_data="delivery_contact")],
+        [InlineKeyboardButton("🔙 Back to Main Menu", callback_data="start_back")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def get_delivery_back_keyboard():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔙 Back to Delivery Menu", callback_data="delivery_back")]
+    ])
