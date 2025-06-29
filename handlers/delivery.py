@@ -2,7 +2,6 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 from menus import get_delivery_keyboard, get_delivery_back_keyboard
-from handlers.order import order_menu  # optional if needed
 
 # === Called by /deliveries or callback ===
 async def delivery_menu(update: Update, context: ContextTypes.DEFAULT_TYPE, from_callback=False):
