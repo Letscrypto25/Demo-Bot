@@ -1,4 +1,3 @@
-# menus.py
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 def get_start_keyboard():
@@ -22,11 +21,9 @@ def get_order_keyboard():
     return InlineKeyboardMarkup(keyboard)
 
 def get_order_back_keyboard():
-    keyboard = [
+    return InlineKeyboardMarkup([
         [InlineKeyboardButton("🔙 Back to Order Menu", callback_data="order_back")]
-    ]
-    return InlineKeyboardMarkup(keyboard)
-
+    ])
 
 def get_delivery_keyboard():
     keyboard = [
@@ -42,4 +39,19 @@ def get_delivery_keyboard():
 def get_delivery_back_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🔙 Back to Delivery Menu", callback_data="delivery_back")]
+    ])
+
+def get_stock_keyboard():
+    keyboard = [
+        [InlineKeyboardButton("📦 View Stock", callback_data="stock_view")],
+        [InlineKeyboardButton("➕ Add Stock", callback_data="stock_add")],
+        [InlineKeyboardButton("➖ Remove Stock", callback_data="stock_remove")],
+        [InlineKeyboardButton("🧾 Stock Report", callback_data="stock_report")],
+        [InlineKeyboardButton("🔙 Back to Main Menu", callback_data="start_back")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def get_stock_back_keyboard():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔙 Back to Stock Menu", callback_data="stock_back")]
     ])
